@@ -11,6 +11,7 @@ import {NgForm} from '@angular/forms';
 })
 export class FormComponent implements OnInit {
   product: Product = new Product();
+  lastId: number;
 
   constructor(private  model: Model, private state: SharedState) { }
 
@@ -28,6 +29,17 @@ export class FormComponent implements OnInit {
 
   resetForm() {
     this.product = new Product();
+  }
+
+  // tslint:disable-next-line:use-lifecycle-interface
+  ngDoCheck() {
+    if (this.lastId !== this.state.id) {
+      this.product = new Product();
+      if (this.state.mode === MODES.EDIT) {
+        Object.assign(this.product, this.model.getProduct(this.state.id));
+      }
+      this.lastId = this.state.id;
+    }
   }
 
   ngOnInit() {
